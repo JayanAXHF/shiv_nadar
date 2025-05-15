@@ -25,3 +25,19 @@ export const posts = createTable(
   }),
   (t) => [index("name_idx").on(t.name)],
 );
+
+export const messages = createTable(
+  "message",
+  (d) => ({
+    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+    text: d.varchar({ length: 4096 }),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+    user_id: d.integer().notNull(),
+    user_msg: d.boolean().notNull(),
+  }),
+  (t) => [index("text_idx").on(t.text)],
+);
