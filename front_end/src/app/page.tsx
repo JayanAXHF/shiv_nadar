@@ -1,21 +1,17 @@
 import React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
 import { db } from "../server/db/";
-import { authClient } from "../lib/auth-client";
 import Navbar from "../components/navbar";
 import Chat from "../components/chat";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default async function HomePage() {
   const messages = await db.query.messages.findMany();
 
-
   return (
-    <div className="w-full flex flex-col justify-center">
+    <div className="w-full flex flex-col justify-center h-dvh">
       <Navbar />
-			<Chat messages={messages} />
-
+      <Chat messages={messages} />
     </div>
   );
 }
