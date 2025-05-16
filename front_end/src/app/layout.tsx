@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
+import { ThemeProvider } from "../components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -19,7 +20,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`}>
-      <body className="bg-black text-white ">{children}</body>
+      <body className="bg-black text-white ">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
