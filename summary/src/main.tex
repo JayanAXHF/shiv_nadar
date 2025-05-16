@@ -1,0 +1,113 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------------------
+% Tau
+% LaTeX Template
+% Version 2.4.4 (28/02/2025)
+%
+% Author:
+% Guillermo Jimenez (memo.notess1@gmail.com)
+%
+% License:
+% Creative Commons CC BY 4.0
+% --------------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[9pt,a4paper,twocolumn,twoside]{tau-class/tau}
+\usepackage[english]{babel}
+
+%% Spanish babel recomendation
+% \usepackage[spanish,es-nodecimaldot,es-noindentfirst]{babel}
+
+%% Draft watermark
+% \usepackage{draftwatermark}
+
+%----------------------------------------------------------
+% TITLE
+%----------------------------------------------------------
+
+\journalname{Lotus Valley International School Gurugram}
+\title{<Insert title>: a bot to solve student troubles}
+
+%----------------------------------------------------------
+% AUTHORS, AFFILIATIONS AND PROFESSOR
+%----------------------------------------------------------
+
+\author[a,1]{Jayan Sunil}
+\author[b,2]{Rachit Rustagi}
+\author[c,3]{Aarav Khandpur}
+
+%----------------------------------------------------------
+
+\affil[a]{IX --- Everest, +91 9910856655}
+\affil[b]{IX --- Nilgiris, idk}
+\affil[c]{IX --- Nilgiris, idk}
+
+\professor{}
+
+%----------------------------------------------------------
+% FOOTER INFORMATION
+%----------------------------------------------------------
+
+\institution{<Insert Name>}
+\footinfo{Lotus Valley International School Gurugram}
+\theday{\today}
+\leadauthor{Jayan et al.}
+\course{Shiv Nadar Interschool Competition}
+
+%----------------------------------------------------------
+% ABSTRACT AND KEYWORDS
+%----------------------------------------------------------
+
+\begin{abstract}
+	This project, <name>, is a chatbot that is designed to solve the most frustrating that students face in their daily lives. From struggling to find assignments to needing help with their cumbersome homeworks, this chatbot can do it all --- all while being reliable and easy to use.
+\end{abstract}
+
+%----------------------------------------------------------
+
+\keywords{\url{shiv-nadar.vercel.app}}
+
+%----------------------------------------------------------
+
+\begin{document}
+
+\maketitle
+\thispagestyle{firststyle}
+\tauabstract
+\tableofcontents
+\linenumbers
+
+%----------------------------------------------------------
+
+\section{Introduction}
+
+\taustart{W}elcome to <name>, the chatbot to solve it all. This bot is designed to fulfil your every need as a student: it can find your homework, and it can help you solve it. Utilizing modern frameworks, the bot entails a clean, functional UI, making the power of Python accessible to the layperson. This document is a guide to the inner working of <name>
+
+
+\section{Technologies Used}
+\begin{enumerate}
+	\item NextJS (frontend)
+	      \begin{itemize}
+		      \item Shadcn/ui (UI)
+		      \item Better Auth (User Authentication)
+	      \end{itemize}
+	\item Python (backend)
+	      \begin{itemize}
+		      \item API calls --- FastAPI
+		      \item LLM --- PyTorch and Transformers (HuggingFace)
+	      \end{itemize}
+	\item PostgreSQL (database)
+	      \begin{itemize}
+		      \item ORM --- Drizzle
+		      \item DB provider --- Vercel Postgres (Neon)
+	      \end{itemize}
+\end{enumerate}
+\subsection{Frontend}
+For a fast and responsive frontend, we used NextJS. Its vast ecosystem, and reliability were major perks. It allowed us to create many complex functions effectively. To make NextJS even better, we used Shadcn, a popular UI library that provides accesible base components. For authentication, we used BetterAuth, an open-source authentication library that gives us support for many social logins like Google and Github.
+
+
+\subsection{Backend}
+
+
+
+
+\end{document}
