@@ -1,6 +1,9 @@
 "use server";
 import { db } from "./db";
 import { messages } from "./db/schema";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { eq } from "drizzle-orm";
 
 export async function sendMessage(message: string, user_id: number) {
   const toSend = {
@@ -10,7 +13,7 @@ export async function sendMessage(message: string, user_id: number) {
     createdAt: new Date(),
     updatedAt: new Date(),
   };
- const msg =  await db.insert(messages).values(toSend).returning();
+  const msg = await db.insert(messages).values(toSend).returning();
   return msg[0];
 }
 
@@ -25,6 +28,15 @@ export async function sendLlmMessage(message: string, user_id: number) {
 }
 
 export async function getMessages() {
-  const messages = await db.query.messages.findMany();
-  return messages;
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+  if (session) {
+    const uid = parseInt(session.user.id);
+    const messages = await db.query.messages.findMany({
+      where: (model, { eq }) => eq(model.user_id, uid),
+      orderBy: (model, { asc }) => asc(model.id),
+    });
+    return messages;
+  }
 }

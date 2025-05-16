@@ -11,6 +11,7 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { db } from "../server/db/";
+import { LlmMessageCard, UserMessageCard } from "./message_cards";
 
 interface propTypes {
   messages: {
@@ -76,15 +77,21 @@ const ChatCore = () => {
   }, [isMessagesSuccess, data]);
 
   return (
-    <div className="h-full">
+    <div className="h-full max-h-full overflow-hidden">
       {session && (
-        <div className="flex flex-col items-center h-full justify-center md:w-[60vw] mx-auto">
-          <ScrollArea className="h-full w-full flex bg-black py-10 mx-auto">
-            {messages?.map((message) => (
-              <div key={message.id} className="justify-end w-full text-center">
-                {message.text}
-              </div>
-            ))}
+    <div className="flex flex-col items-center overflow-hidden  justify-center md:w-[40vw] mx-auto">
+     <ScrollArea className="w-full h-full pb-10 max-h-[85vh] overflow-scroll bg-black mx-auto ">
+      <div className="h-full w-full grid bg-black mx-auto gap-y-5">
+       {messages?.map((message) => (
+        <>
+         {message.user_msg ? (
+          <UserMessageCard message={message.text!} />
+                  ) : (
+                    <LlmMessageCard message={message.text!} />
+                  )}
+                </>
+              ))}
+            </div>
           </ScrollArea>
           <div className="flex items-center justify-center w-full pb-10">
             <PlaceholdersAndVanishInput
