@@ -3,3 +3,11 @@
 **/.vscode
 **/.idea
 **/.git
+**/__pycache__
+**/.ipynb_checkpoints
+**/.pytest_cache
+**/*.egg-info
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.c
