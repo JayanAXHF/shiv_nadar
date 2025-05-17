@@ -104,9 +104,10 @@
 \subsection{Frontend}
 For a fast and responsive frontend, we used NextJS. Its vast ecosystem, and reliability were major perks. It allowed us to create many complex functions effectively. To make NextJS even better, we used Shadcn, a popular UI library that provides accesible base components. For authentication, we used BetterAuth, an open-source authentication library that gives us support for many social logins like Google and Github.
 
+\subsection{Backend \& Database}
+The backend has two parts: the LLM and the API. The LLM is powered by PyTorch and Transformers, where we have fine-tuned a model to cater to a student's needs. To allow the frontend to interact with the LLM, we have a FastAPI wrapper around the model. The API has one route: \verb|/requests?text=<string>|, which the frontend sends a \verb|GET| request to.
 
-\subsection{Backend}
-
+The database is a PostgreSQL database, which is used to store user information and their chat history. We use Vercel Postgres, with Neon, for a fast and scalable experience. As the ORM, we use Drizzle, which is a performant, easy to use ORM that gives us ease of use and flexibility.
 
 
 
