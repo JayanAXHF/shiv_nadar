@@ -5,6 +5,22 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "fastapi>=0.115.12",
+    "accelerate>=1.7.0",
+    "boto3>=1.38.18",
+    "chromadb>=0.6.3",
+    "datasets>=3.6.0",
+    "evaluate>=0.4.3",
+    "fastapi[standard]>=0.115.12",
+    "fritz>=2.3.5",
+    "hf-xet>=1.1.2",
+    "langchain>=0.3.25",
+    "pymupdf>=1.25.5",
+    "pypdf2>=3.0.1",
+    "sagemaker>=2.244.1",
+    "sentence-transformers>=4.1.0",
+    "tiktoken>=0.9.0",
     "torch>=2.7.0",
+    "torchaudio>=2.7.0",
+    "torchvision>=0.22.0",
+    "transformers>=4.51.3",
 ]

@@ -18,13 +18,17 @@ export async function sendMessage(message: string, user_id: number) {
 }
 
 export async function sendLlmMessage(message: string, user_id: number) {
-  await db.insert(messages).values({
-    text: message,
-    user_id: user_id,
-    user_msg: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  });
+  const msg = await db
+    .insert(messages)
+    .values({
+      text: message,
+      user_id: user_id,
+      user_msg: false,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    })
+    .returning();
+  return msg[0];
 }
 
 export async function getMessages() {
