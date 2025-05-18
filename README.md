@@ -12,7 +12,7 @@ This chatbot was created by:
 
 - [Rachit Rustagi](https://github.com/QuantumCosmoCoder)
 - [Aarav Khandpur](https://github.com/DetectiveAK)
-- [Jayan Agarwal](https://github.com/JayanAXHF)
+- [Jayan Sunil](https://github.com/JayanAXHF)
 
 We are proud to represent Lotus Valley International School in this interschool challenge!
 
