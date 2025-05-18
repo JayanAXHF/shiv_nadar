@@ -3,15 +3,18 @@ import React from "react";
 import { authClient } from "../lib/auth-client";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { atom, getDefaultStore, useAtom } from "jotai";
+import { Input } from "./ui/input";
+import Image from "next/image";
+
+const max_length_atom = atom(100);
+const defaultStore = getDefaultStore();
+export { max_length_atom };
 
 const Navbar = () => {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
-  } = authClient.useSession();
+  const { data: session } = authClient.useSession();
 
+  const [max_length, setMaxLength] = useAtom<number>(max_length_atom);
   return (
     <nav className="w-dvw flex items-center h-20 px-5 py-5">
       {session ? (
@@ -27,7 +30,13 @@ const Navbar = () => {
               <p className="text-white text-xs">Welcome back!</p>
             </div>
           </div>
-          <div className="mr-4">
+          <div className="mr-4 flex gap-x-5">
+            <Input
+              onChange={(e) => {
+                setMaxLength(parseInt(e.target.value));
+              }}
+              placeholder="Max Length"
+            />
             <Button
               variant={"outline"}
               onClick={async () => {

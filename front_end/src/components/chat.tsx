@@ -12,6 +12,8 @@ import {
 } from "@tanstack/react-query";
 import { db } from "../server/db/";
 import { LlmMessageCard, UserMessageCard } from "./message_cards";
+import { max_length_atom } from "./navbar";
+import { getDefaultStore } from "jotai";
 
 interface propTypes {
   messages: {
@@ -32,6 +34,8 @@ const Chat = ({ messages }: propTypes) => {
 };
 
 const ChatCore = () => {
+  const defaultStore = getDefaultStore();
+
   const [fetchingResponse, setFetchingResponse] = useState(false);
   const { data: session, isPending, error, refetch } = authClient.useSession();
   const [newMessage, setNewMessage] = useState("");
@@ -70,7 +74,7 @@ const ChatCore = () => {
         },
         body: JSON.stringify({
           prompt: newMessage,
-          max_length: 30,
+          max_length: defaultStore.get(max_length_atom),
           temperature: 0.7,
         }),
       });
@@ -127,13 +131,19 @@ const ChatCore = () => {
           <ScrollArea className="w-full h-full pb-10 max-h-[85vh] overflow-scroll bg-black mx-auto ">
             <div className="h-full w-full grid bg-black mx-auto gap-y-5">
               {messages?.map((message) => (
-                <>
+                <div key={message.id}>
                   {message.user_msg ? (
-                    <UserMessageCard message={message.text!} />
+                    <UserMessageCard
+                      message={message.text!}
+                      timestamp={message.createdAt}
+                    />
                   ) : (
-                    <LlmMessageCard message={message.text!} />
+                    <LlmMessageCard
+                      message={message.text!}
+                      timestamp={message.createdAt}
+                    />
                   )}
-                </>
+                </div>
               ))}
             </div>
           </ScrollArea>
