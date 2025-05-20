@@ -17,6 +17,7 @@ import { atom, getDefaultStore, useAtom } from "jotai";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { isError } from "util";
+import { Switch } from "@radix-ui/react-switch";
 
 interface propTypes {
   messages: {

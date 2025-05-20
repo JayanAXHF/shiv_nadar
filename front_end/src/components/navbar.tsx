@@ -6,8 +6,11 @@ import Link from "next/link";
 import { atom, getDefaultStore, useAtom } from "jotai";
 import { Input } from "./ui/input";
 import Image from "next/image";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
 const max_length_atom = atom(100);
+const check_circulars_atom = atom(false);
 const defaultStore = getDefaultStore();
 export { max_length_atom };
 
@@ -15,6 +18,8 @@ const Navbar = () => {
   const { data: session } = authClient.useSession();
 
   const [max_length, setMaxLength] = useAtom<number>(max_length_atom);
+  const [check_circulars, setCheckCirculars] =
+    useAtom<boolean>(check_circulars_atom);
   return (
     <nav className="w-dvw flex items-center h-20 px-5 py-5">
       {session ? (
@@ -30,7 +35,11 @@ const Navbar = () => {
               <p className="text-white text-xs">Welcome back!</p>
             </div>
           </div>
-          <div className="mr-4 flex gap-x-5">
+          <div className="mr-4 flex gap-x-5 flex-row items-center">
+            <Switch id="assigment_toggle" onCheckedChange={setCheckCirculars} checked={check_circulars} />
+            <Label htmlFor="assigment_toggle" className="mr-5 w-max min-w-32">
+              {check_circulars ? "Checking Circulars" : "Only NCERT"}
+            </Label>
             <Input
               onChange={(e) => {
                 setMaxLength(parseInt(e.target.value));
