@@ -14,6 +14,7 @@ import { db } from "../server/db/";
 import { LlmMessageCard, UserMessageCard } from "./message_cards";
 import { max_length_atom } from "./navbar";
 import { getDefaultStore } from "jotai";
+import { toast } from "sonner";
 
 interface propTypes {
   messages: {
@@ -21,7 +22,7 @@ interface propTypes {
     createdAt: Date;
     updatedAt: Date | null;
     text: string | null;
-    user_id: number;
+    user_id: string;
     user_msg: boolean;
   }[];
 }
@@ -48,59 +49,76 @@ const ChatCore = () => {
   };
 
   const handleSubmit = async () => {
-    if (newMessage && !fetchingResponse) {
-      const msg = await sendMessage(
-        newMessage,
-        parseInt(session?.user?.id as string),
-      );
-      let push_queue = [];
-      push_queue.push(
-        msg as {
-          id: number;
-          createdAt: Date;
-          updatedAt: Date | null;
-          text: string | null;
-          user_id: number;
-          user_msg: boolean;
-        },
-      );
+    try {
+      if (newMessage && !fetchingResponse) {
+        setFetchingResponse(true);
+        const res = await fetch("http://127.0.0.1:8000/generate", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            prompt: newMessage,
+            max_length: defaultStore.get(max_length_atom),
+            temperature: 0.7,
+          }),
+        }).catch((err) => {
+          toast.error(err.message);
+          setFetchingResponse(false);
+          return;
+        });
+        if (!res) {
+          setFetchingResponse(false);
+          return;
+        }
 
-      setFetchingResponse(true);
-      const res = await fetch("http://127.0.0.1:8000/generate", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          prompt: newMessage,
-          max_length: defaultStore.get(max_length_atom),
-          temperature: 0.7,
-        }),
-      });
-      setNewMessage("");
-      const data: string = await res.json();
-      console.log(data);
-      const chatbot_response = data.response;
-      console.log(chatbot_response);
-      let to_push = await sendLlmMessage(
-        chatbot_response as string,
-        parseInt(session?.user?.id as string),
-      );
-      console.log(data);
-      push_queue.push(
-        to_push as {
-          id: number;
-          createdAt: Date;
-          updatedAt: Date | null;
-          text: string | null;
-          user_id: number;
-          user_msg: boolean;
-        },
-      );
-      setMessages([...messages!, ...push_queue]);
+        const msg = await sendMessage(
+          newMessage,
+          parseInt(session?.user?.id as string),
+        );
+        const push_queue = [];
+        push_queue.push(
+          msg as {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date | null;
+            text: string | null;
+            user_id: string;
+            user_msg: boolean;
+          },
+        );
+
+        setNewMessage("");
+        const data: string = await res.json();
+        console.log(data);
+        const chatbot_response = data.response;
+        console.log(chatbot_response);
+        let to_push = await sendLlmMessage(
+          chatbot_response as string,
+          session?.user?.id as string,
+        ).catch((err) => {
+          toast.error(err.message);
+        });
+        console.log(data);
+        push_queue.push(
+          to_push as {
+            id: number;
+            createdAt: Date;
+            updatedAt: Date | null;
+            text: string | null;
+            user_id: string;
+            user_msg: boolean;
+          },
+        );
+        if (to_push && push_queue[0]) {
+        }
+        setMessages([...messages!, ...push_queue]);
+      }
+      setFetchingResponse(false);
+    } catch (error) {
+      toast.error(error.message as string);
     }
-    setFetchingResponse(false);
   };
   const [messages, setMessages] = useState<
     {
@@ -108,7 +126,7 @@ const ChatCore = () => {
       createdAt: Date;
       updatedAt: Date | null;
       text: string | null;
-      user_id: number;
+      user_id: string;
       user_msg: boolean;
     }[]
   >();
@@ -127,7 +145,7 @@ const ChatCore = () => {
   return (
     <div className="h-full max-h-full overflow-hidden">
       {session && (
-        <div className="flex flex-col items-center overflow-hidden  justify-center md:w-[40vw] mx-auto">
+        <div className="flex flex-col h-full items-center overflow-hidden  justify-center md:w-[40vw] mx-auto">
           <ScrollArea className="w-full h-full pb-10 max-h-[85vh] overflow-scroll bg-black mx-auto ">
             <div className="h-full w-full grid bg-black mx-auto gap-y-5">
               {messages?.map((message) => (
@@ -147,7 +165,7 @@ const ChatCore = () => {
               ))}
             </div>
           </ScrollArea>
-          <div className="flex items-center justify-center w-full pb-10">
+          <div className="flex items-center justify-center w-full pb-10 absolute bottom-0">
             <PlaceholdersAndVanishInput
               placeholders={[
                 "What was the recent assignment?",

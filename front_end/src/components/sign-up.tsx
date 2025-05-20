@@ -150,27 +150,36 @@ export default function SignUp() {
             className="w-full"
             disabled={loading}
             onClick={async () => {
-              await signUp.email({
-                email,
-                password,
-                name: `${firstName} ${lastName}`,
-                image: image ? await convertImageToBase64(image) : "",
-                callbackURL: "/dashboard",
-                fetchOptions: {
-                  onResponse: () => {
-                    setLoading(false);
+              try {
+                const res = await signUp.email({
+                  email,
+                  password,
+                  name: `${firstName} ${lastName}`,
+                  image: image ? await convertImageToBase64(image) : "",
+                  callbackURL: "/dashboard",
+                  fetchOptions: {
+                    onResponse: () => {
+                      setLoading(false);
+                    },
+                    onRequest: () => {
+                      setLoading(true);
+                    },
+                    onError: (ctx) => {
+                      toast.error(ctx.error.message);
+                    },
+                    onSuccess: async () => {
+                      router.push("/");
+                    },
                   },
-                  onRequest: () => {
-                    setLoading(true);
-                  },
-                  onError: (ctx) => {
-                    toast.error(ctx.error.message);
-                  },
-                  onSuccess: async () => {
-                    router.push("/");
-                  },
-                },
-              });
+                });
+                if (res?.error) {
+                  toast.error(`ERR ${res.error.status}: ${res.error.code}`, {
+                    description: res.error.message,
+                  });
+                }
+              } catch (error) {
+                toast.error(error.message as string);
+              }
             }}
           >
             {loading ? (

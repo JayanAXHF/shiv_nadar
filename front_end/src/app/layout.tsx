@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "../components/theme-provider";
 import { PostHogProvider } from "../components/PostHogProvider";
@@ -22,16 +23,15 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>  
       <body className="bg-black text-white ">
-        <PostHogProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </PostHogProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

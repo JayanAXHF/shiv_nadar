@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from transformers import pipeline
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from typing import Union
 
 generator = pipeline("text-generation", model="gpt2")
 

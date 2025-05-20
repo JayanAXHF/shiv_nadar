@@ -43,7 +43,7 @@ export const messages = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-    user_id: d.integer().notNull(),
+    user_id: d.varchar().notNull(),
     user_msg: d.boolean().notNull(),
   }),
   (t) => [index("text_idx").on(t.text)],

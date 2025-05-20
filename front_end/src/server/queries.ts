@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { eq } from "drizzle-orm";
 
-export async function sendMessage(message: string, user_id: number) {
+export async function sendMessage(message: string, user_id: string) {
   const toSend = {
     text: message,
     user_id: user_id,
@@ -17,7 +17,7 @@ export async function sendMessage(message: string, user_id: number) {
   return msg[0];
 }
 
-export async function sendLlmMessage(message: string, user_id: number) {
+export async function sendLlmMessage(message: string, user_id: string) {
   const msg = await db
     .insert(messages)
     .values({
