@@ -42,3 +42,18 @@ def generate_text(request: PromptRequest):
     )
 
     return {"response": result[0]["generated_text"]}
+
+
+@app.post("/ncert")
+def ncert_text(request: PromptRequest):
+    #  if not request.prompt.strip():
+    #      raise HTTPException(status_code=400, detail="Prompt cannot be empty")
+
+    result = generator(
+        request.prompt,
+        max_length=request.max_length,
+        temperature=request.temperature,
+        do_sample=True,
+    )
+
+    return {"response": result[0]["generated_text"]}
