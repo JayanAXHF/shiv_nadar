@@ -111,7 +111,7 @@ The backend has two parts: the LLM and the API. The LLM is powered by PyTorch an
 		temperature: number (defaults to 0.7);
 		max_length: number (defaults to 100);
 	}
-\end{lstlisting} To traing this model, we used Amazon Sagemaker.
+\end{lstlisting} To traing this model, we used an RTX 4070 GPU on a moderately-speced machine.
 
 The database is a PostgreSQL database, which is used to store user information and their chat history. We use Vercel Postgres, with Neon, for a fast and scalable experience. As the ORM, we use Drizzle, which is type-safe, lightweight, and has a SQL-centric approach to interacting with databases, making it ideal for modern TypeScript.
 

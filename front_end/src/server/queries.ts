@@ -36,7 +36,7 @@ export async function getMessages() {
     headers: await headers(), // you need to pass the headers object.
   });
   if (session) {
-    const uid = parseInt(session.user.id);
+    const uid = session.user.id;
     const messages = await db.query.messages.findMany({
       where: (model, { eq }) => eq(model.user_id, uid),
       orderBy: (model, { asc }) => asc(model.id),

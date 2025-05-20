@@ -13,8 +13,10 @@ import {
 import { db } from "../server/db/";
 import { LlmMessageCard, UserMessageCard } from "./message_cards";
 import { max_length_atom } from "./navbar";
-import { getDefaultStore } from "jotai";
+import { atom, getDefaultStore, useAtom } from "jotai";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { isError } from "util";
 
 interface propTypes {
   messages: {
@@ -40,18 +42,12 @@ const ChatCore = () => {
   const [fetchingResponse, setFetchingResponse] = useState(false);
   const { data: session, isPending, error, refetch } = authClient.useSession();
   const [newMessage, setNewMessage] = useState("");
-  const getResponse = async (question: string) => {
-    let { data: response, isPending: isResponsePending } = useQuery({
-      queryKey: ["response"],
-      queryFn: () =>
-        fetch(process.env.NEXT_PUBLIC_API_URL!).then((res) => res.json()),
-    });
-  };
 
   const handleSubmit = async () => {
     try {
       if (newMessage && !fetchingResponse) {
         setFetchingResponse(true);
+
         const res = await fetch("http://127.0.0.1:8000/generate", {
           method: "POST",
           headers: {
@@ -73,10 +69,7 @@ const ChatCore = () => {
           return;
         }
 
-        const msg = await sendMessage(
-          newMessage,
-          parseInt(session?.user?.id as string),
-        );
+        const msg = await sendMessage(newMessage, session?.user?.id as string);
         const push_queue = [];
         push_queue.push(
           msg as {
@@ -94,11 +87,13 @@ const ChatCore = () => {
         console.log(data);
         const chatbot_response = data.response;
         console.log(chatbot_response);
-        let to_push = await sendLlmMessage(
+        console.log(session?.user?.id);
+        const to_push = await sendLlmMessage(
           chatbot_response as string,
-          session?.user?.id as string,
+          session?.user?.id!,
         ).catch((err) => {
           toast.error(err.message);
+          setFetchingResponse(false);
         });
         console.log(data);
         push_queue.push(
@@ -119,6 +114,7 @@ const ChatCore = () => {
     } catch (error) {
       toast.error(error.message as string);
     }
+    setFetchingResponse(false);
   };
   const [messages, setMessages] = useState<
     {
@@ -146,7 +142,7 @@ const ChatCore = () => {
     <div className="h-full max-h-full overflow-hidden">
       {session && (
         <div className="flex flex-col h-full items-center overflow-hidden  justify-center md:w-[40vw] mx-auto">
-          <ScrollArea className="w-full h-full pb-10 max-h-[85vh] overflow-scroll bg-black mx-auto ">
+          <ScrollArea className="w-full h-full pb-14 max-h-[80vh] overflow-scroll bg-black mx-auto ">
             <div className="h-full w-full grid bg-black mx-auto gap-y-5">
               {messages?.map((message) => (
                 <div key={message.id}>
@@ -163,6 +159,22 @@ const ChatCore = () => {
                   )}
                 </div>
               ))}
+              {fetchingResponse && (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={cn("animate-spin")}
+                >
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                </svg>
+              )}
             </div>
           </ScrollArea>
           <div className="flex items-center justify-center w-full pb-10 absolute bottom-0">
