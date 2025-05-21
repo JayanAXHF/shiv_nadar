@@ -13,10 +13,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Setup Tectonic
-      uses: WtfJoke/setup-tectonic@v3.1.4
+    - name: Install Tectonic dev build
+      run: |
+        curl -L https://github.com/tectonic-typesetting/tectonic/releases/download/latest/tectonic-latest-x86_64-unknown-linux-musl.tar.gz -o tectonic.tar.gz
+        tar -xzf tectonic.tar.gz
+        sudo mv tectonic /usr/local/bin/tectonic
 
-    - name: Compile LaTeX document
+    - name: Compile LaTeX document with Tectonic V2
       run: |
         cd summary
         tectonic -X build
