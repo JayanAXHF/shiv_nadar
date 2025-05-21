@@ -1,0 +1,28 @@
+name: Build LaTeX document
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Tectonic
+      uses: WtfJoke/setup-tectonic@v3.1.4
+
+    - name: Compile LaTeX document
+      run: |
+        cd summary
+        tectonic -X build
+
+    - name: Upload PDF artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: PDF
+        path: summary/build/main/main.pdf
