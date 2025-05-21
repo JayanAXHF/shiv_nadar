@@ -26,21 +26,21 @@
 %----------------------------------------------------------
 
 \journalname{Lotus Valley International School Gurugram}
-\title{<Insert title>: a bot to solve student troubles}
+\title{Valtam: a bot to solve student troubles}
 
 %----------------------------------------------------------
 % AUTHORS, AFFILIATIONS AND PROFESSOR
 %----------------------------------------------------------
 
-\author[a,1]{Jayan Sunil}
-\author[b,2]{Rachit Rustagi}
-\author[c,3]{Aarav Khandpur}
+\author[a]{Jayan Sunil}
+\author[b]{Rachit Rustagi}
+\author[c]{Aarav Khandpur}
 
 %----------------------------------------------------------
 
 \affil[a]{IX --- Everest, +91 9910856655}
-\affil[b]{IX --- Nilgiris, idk}
-\affil[c]{IX --- Nilgiris, idk}
+\affil[b]{IX --- Nilgiris, +91 9211450648}
+\affil[c]{IX --- Nilgiris, +91 9211612568}
 
 \professor{}
 
@@ -48,7 +48,7 @@
 % FOOTER INFORMATION
 %----------------------------------------------------------
 
-\institution{<Insert Name>}
+\institution{Valtam}
 \footinfo{Lotus Valley International School Gurugram}
 \theday{\today}
 \leadauthor{Jayan et al.}
@@ -59,7 +59,7 @@
 %----------------------------------------------------------
 
 \begin{abstract}
-	This project, <name>, is a chatbot that is designed to solve the most frustrating that students face in their daily lives. From struggling to find assignments to needing help with their cumbersome homeworks, this chatbot can do it all --- all while being reliable and easy to use.
+	This project, Valtam, is a chatbot that is designed to solve the most frustrating that students face in their daily lives. From struggling to find assignments to needing help with their cumbersome homeworks, this chatbot can do it all --- all while being reliable and easy to use.
 \end{abstract}
 
 %----------------------------------------------------------
@@ -80,7 +80,7 @@
 
 \section{Introduction}
 
-\taustart{W}elcome to <name>, the chatbot to solve it all. This bot is designed to fulfil your every need as a student: it can find your homework, and it can help you solve it. Utilizing modern frameworks, the bot entails a clean, functional UI, making the power of Python accessible to the layperson. This document is a guide to the inner working of <name>.
+\taustart{W}elcome to Valtam, the chatbot to solve it all. This bot is designed to fulfil your every need as a student: it can find your homework, and it can help you solve it. Utilizing modern frameworks, the bot entails a clean, functional UI, making the power of Python accessible to the layperson. This document is a guide to the inner working of Valtam.
 
 
 \section{Technologies Used}
@@ -93,12 +93,17 @@
 	\item Python (backend)
 	      \begin{itemize}
 		      \item API calls --- FastAPI
-		      \item LLM --- PyTorch and Transformers (HuggingFace) and Amazon Sagemaker for training.
+		      \item LLM --- PyTorch and Transformers (HuggingFace)
 	      \end{itemize}
 	\item PostgreSQL (database)
 	      \begin{itemize}
 		      \item ORM --- Drizzle
 		      \item DB provider --- Vercel Postgres (Neon)
+	      \end{itemize}
+	\item Telemery and Analytics
+	      \begin{itemize}
+		      \item Telemetry \& Error Reporting --- Sentry
+		      \item Analytics --- Posthog
 	      \end{itemize}
 \end{enumerate}
 \subsection{Frontend}
@@ -109,11 +114,11 @@ backend has two parts: the LLM and the API. The LLM is powered by PyTorch and Tr
 	{
 		prompt: string;
 		temperature: number (defaults to 0.7);
-		max_length: number (defaults to 100);
+		max_length: number (defaults to 128);
 	}
 \end{lstlisting}
 \subsection{Model}
-To ensure that our chatbot is relevant to the academic context of Indian school students, we fine-tuned the LLM using a dataset of NCERT textbook explanations. We used the publicly available NCERT Dataset with approximately 8k rows on 3 epochs.
+To ensure that our chatbot is relevant to the academic context of Indian school students, we fine-tuned the LLM using a dataset of NCERT textbook explanations. We used two publicly available NCERT-based datasets for \href{https://huggingface.co/datasets/KadamParth/NCERT_Science_9th}{Science} and \href{https://huggingface.co/datasets/KadamParth/NCERT_Social_Studies_9th}{Social Science} with approximately 8k rows on 3 epochs.
 
 We chose the Qwen 0.6B model for this project.
 
@@ -129,22 +134,16 @@ We used PyTorch for low-level control and trained the model locally on our GPU. 
 
 \subsection{More Information}
 
-The bot's main use case is supposed to be in QA format(Question-Answering), as it is supposed to answer queries and provide help to students
-
-Hence, it is also seen that all the datasets were also in QA form for the same reason.
-
-The Qwen 0.6B(600 Million Parameters) model offers speed, balance and accuracy, the Qwen Model has also in fact outperformed ChatGPT 4 and Deepseek-V3 in key benchmarks majorly in reasoning.
-
-To training this model, we used an RTX 4070 GPU on a machine with the following specs.
+The bot's main use case is supposed to be in QA format(Question-Answering), as it is supposed to answer queries and provide help to students Therefore, the data was organised into a Question-Answer format for optimal training. The Qwen 0.6B (752M params) model offers speed, balance and accuracy. To training this model, we used an RTX 4070 GPU on a machine with the following specs.
 \begin{itemize}
-	\item CPU: 15-13500k
-	\item RAM: 64GB
+	\item CPU: i5-13500k
+	\item RAM: 16GB
 	\item GPU: RTX 4070
 	\item Storage: 1TB NVME 4.0 SSD
-\end{itemize} For the model with only the NCERT, the training loss metric is shown in \ref{tab:train_loss}.
+\end{itemize} For the model with only the NCERT, the training loss metric is shown in Table \ref{tab:train_loss}.
 \begin{table}[H]
 	\centering
-	\caption{Training Loss for model 1}
+	\caption{Training Loss for model 1:}
 	\label{tab:train_loss}
 	\begin{tabular}{ll}
 		\toprule
@@ -166,4 +165,10 @@ To training this model, we used an RTX 4070 GPU on a machine with the following 
 
 The database is a PostgreSQL database, which is used to store user information and their chat history. We use Vercel Postgres, with Neon, for a fast and scalable experience. As the ORM, we use Drizzle, which is type-safe, lightweight, and has a SQL-centric approach to interacting with databases, making it ideal for modern TypeScript.
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=2\linewidth]{./flow-chart.png}
+	\caption{A flow chart of the application lifecycle.}
+	\label{fig:1}
+\end{figure}
 \end{document}

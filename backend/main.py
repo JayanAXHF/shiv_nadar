@@ -10,7 +10,7 @@ from llm import eval_circular, eval_ncert
 # Define the input schema
 class PromptRequest(BaseModel):
     prompt: str
-    max_length: int = 4096
+    max_length: int = 128
     temperature: float = 0.7
 
 
@@ -30,8 +30,8 @@ app.add_middleware(
 # Define a route
 @app.post("/generate/ncert")
 def generate_text(request: PromptRequest):
-    #  if not request.prompt.strip():
-    #      raise HTTPException(status_code=400, detail="Prompt cannot be empty")
+    if not request.prompt.strip():
+        raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
     result = eval_ncert(
         request.prompt,
@@ -43,8 +43,8 @@ def generate_text(request: PromptRequest):
 
 @app.post("/generate/circular")
 def ncert_text(request: PromptRequest):
-    #  if not request.prompt.strip():
-    #      raise HTTPException(status_code=400, detail="Prompt cannot be empty")
+    if not request.prompt.strip():
+        raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
     result = eval_circular(
         request.prompt,
