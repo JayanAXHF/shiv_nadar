@@ -27,27 +27,64 @@ We are proud to represent Lotus Valley International School in this interschool 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/JayanAXHF/shiv-nadar-university.git
-   cd shiv-nadar-university
+   git clone https://github.com/JayanAXHF/shiv-nadar.git
+   cd shiv-nadar
    ```
-2. **Install requirements:**
-   - Make sure you have Python 3.8+ installed.
-   - Install dependencies:
-     ```bash
-     pip install -r requirements.txt
-     ```
-3. **Run the chatbot:**
-   ```bash
-   python chatbot.py
-   ```
-   *(Update the above instructions based on your actual code structure and entry point.)*
+2. **Install dependencies:**
+    The project uses `uv` package manager for the backend. Run
+    ```bash
+    uv sync
+    ```
+    in the backend directory to install the dependencies.
+
+    You can install the frontend dependencies by running
+    ```bash
+    pnpm i
+    ```
+    in the frontend directory.
+3. **Run the backend:**
+Running the backend is a quirky process. Starting from the root directory, run
+```bash
+cd backend/llm
+fastapi dev ../main.py
+```
+Ensure that the `llm` folder contains the trained AI model. Please update your `llm/main.py` file with the path to your model.
+
+4. **Run the frontend:**
+Run the frontend by running
+```bash
+pnpm dev
+```
+in the frontend directory. You can spin up the database console by running
+```bash
+pnpm run db:studio
+```
 
 ## 📂 Structure
 
-- `/src` - Source code for the chatbot
-- `/data` - Event data (schedule, FAQs, etc.)
-- `/docs` - Documentation
-- `/notebooks` - Experimentation and demos
+```
+.
+├── backend/                   # Python backend for LLM logic and datasets
+│   ├── llm/                   # Core LLM scripts, notebooks, data files
+│   ├── logs/                  # TensorBoard logs
+│   ├── results/               # Model checkpoints
+│   ├── testing/               # Test scripts and data
+│   ├── main.py                # Backend entry point
+│   └── pyproject.toml         # Backend dependencies
+│
+├── front_end/                # Next.js frontend app
+│   ├── src/                  # App pages, components, styles
+│   ├── public/               # Static assets (favicon, etc.)
+│   ├── package.json          # Frontend dependencies
+│   └── drizzle.config.ts     # DB config (Drizzle ORM)
+│
+├── summary/                  # LaTeX report with flowcharts & PDF output
+│   └── src/                  # Main .tex, custom class files, .bib
+│
+├── README.md                 # Project overview
+└── indent.log                # Log file (optional/debug)
+```
+
 
 ## 🤝 Contributing
 
