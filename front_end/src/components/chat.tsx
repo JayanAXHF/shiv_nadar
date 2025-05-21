@@ -12,7 +12,7 @@ import {
 } from "@tanstack/react-query";
 import { db } from "../server/db/";
 import { LlmMessageCard, UserMessageCard } from "./message_cards";
-import { max_length_atom } from "./navbar";
+import { max_length_atom, check_circulars_atom } from "./navbar";
 import { atom, getDefaultStore, useAtom } from "jotai";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -49,18 +49,21 @@ const ChatCore = () => {
       if (newMessage && !fetchingResponse) {
         setFetchingResponse(true);
 
-        const res = await fetch("http://127.0.0.1:8000/generate", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
+        const res = await fetch(
+          `http://127.0.0.1:8000/generate/${defaultStore.get(check_circulars_atom) ? "circular" : "ncert"}`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              prompt: newMessage,
+              max_length: defaultStore.get(max_length_atom),
+              temperature: 0.7,
+            }),
           },
-          body: JSON.stringify({
-            prompt: newMessage,
-            max_length: defaultStore.get(max_length_atom),
-            temperature: 0.7,
-          }),
-        }).catch((err) => {
+        ).catch((err) => {
           toast.error(err.message);
           setFetchingResponse(false);
           return;
@@ -144,7 +147,7 @@ const ChatCore = () => {
       {session && (
         <div className="flex flex-col h-full items-center overflow-hidden  justify-center md:w-[40vw] mx-auto">
           <ScrollArea className="w-full h-full pb-14 max-h-[80vh] overflow-scroll bg-black mx-auto ">
-            <div className="h-full w-full grid bg-black mx-auto gap-y-5">
+            <div className="h-full w-full grid justify-center sm:justify-normal bg-black mx-auto gap-y-5">
               {messages?.map((message) => (
                 <div key={message.id}>
                   {message.user_msg ? (
@@ -178,7 +181,7 @@ const ChatCore = () => {
               )}
             </div>
           </ScrollArea>
-          <div className="flex items-center justify-center w-full pb-10 absolute bottom-0">
+          <div className="flex items-center justify-center w-full md:pb-10 pb-5 absolute bottom-0">
             <PlaceholdersAndVanishInput
               placeholders={[
                 "What was the recent assignment?",

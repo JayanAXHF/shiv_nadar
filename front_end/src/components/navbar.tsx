@@ -12,12 +12,28 @@ import { Label } from "./ui/label";
 const max_length_atom = atom(100);
 const check_circulars_atom = atom(false);
 const defaultStore = getDefaultStore();
-export { max_length_atom };
+export { max_length_atom, check_circulars_atom };
+
+export const Icon = ({ className, ...rest }: any) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      className={className}
+      {...rest}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
+    </svg>
+  );
+};
 
 const Navbar = () => {
   const { data: session } = authClient.useSession();
 
-  const [max_length, setMaxLength] = useAtom<number>(max_length_atom);
+  const [_max_length, setMaxLength] = useAtom<number>(max_length_atom);
   const [check_circulars, setCheckCirculars] =
     useAtom<boolean>(check_circulars_atom);
   return (
@@ -36,8 +52,16 @@ const Navbar = () => {
             </div>
           </div>
           <div className="mr-4 flex gap-x-5 flex-row items-center">
-            <Switch id="assigment_toggle" onCheckedChange={setCheckCirculars} checked={check_circulars} />
-            <Label htmlFor="assigment_toggle" className="mr-5 w-max min-w-32">
+            <Switch
+              id="assigment_toggle"
+              onCheckedChange={setCheckCirculars}
+              checked={check_circulars}
+              className="hidden md:block"
+            />
+            <Label
+              htmlFor="assigment_toggle"
+              className="mr-5 w-max min-w-32 hidden md:block "
+            >
               {check_circulars ? "Checking Circulars" : "Only NCERT"}
             </Label>
             <Input
@@ -45,6 +69,7 @@ const Navbar = () => {
                 setMaxLength(parseInt(e.target.value));
               }}
               placeholder="Max Length"
+              className="hidden md:block"
             />
             <Button
               variant={"outline"}

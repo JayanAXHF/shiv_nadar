@@ -105,15 +105,65 @@
 For a fast and responsive frontend, we used NextJS. Its vast ecosystem, and reliability were major perks. It allowed us to create many complex functions effectively. To make NextJS even better, we used Shadcn, a popular UI library that provides accesible base components. For authentication, we used BetterAuth, an open-source authentication library that gives us support for many social logins like Google and Github.
 
 \subsection{Backend \& Database}
-The backend has two parts: the LLM and the API. The LLM is powered by PyTorch and Transformers, where we have fine-tuned a model to cater to a student's needs. To allow the frontend to interact with the LLM, we have a FastAPI wrapper around the model. The API has one route: \verb|/generate|, which takes a request body of \begin{lstlisting}[language=TeX, caption=Request Body for /generate]
+backend has two parts: the LLM and the API. The LLM is powered by PyTorch and Transformers, where we have trained a base model to cater to a student's needs. There are two trained models: one that is only for the NCERT and one that also has the assignments. To allow the frontend to interact with the LLM, we have a FastAPI wrapper around the model. The API has two routes: \verb|/generate/{ncert,assignments}|, which take a request body of \begin{lstlisting}[language=TeX, caption=Request Body for /generate/*]
 	{
 		prompt: string;
 		temperature: number (defaults to 0.7);
 		max_length: number (defaults to 100);
 	}
-\end{lstlisting} To traing this model, we used an RTX 4070 GPU on a moderately-speced machine.
+\end{lstlisting}
+\subsection{Model}
+To ensure that our chatbot is relevant to the academic context of Indian school students, we fine-tuned the LLM using a dataset of NCERT textbook explanations. We used the publicly available NCERT Dataset with approximately 8k rows on 3 epochs.
+
+We chose the Qwen 0.6B model for this project.
+
+The training pipeline used the NCERT Database combined with a database which has queries from our school portal
+\begin{itemize}
+	\item \textbf{Tokenizer:} AutoTokenizer from Qwen model
+	\item \textbf{Max Length:} 128 tokens
+	\item \textbf{Epochs:} 3
+	\item \textbf{Precision:} FP16 (mixed-precision training)
+\end{itemize}
+
+We used PyTorch for low-level control and trained the model locally on our GPU. After training, the model showed improved performance on curriculum-specific queries, demonstrating a solid understanding of academic content.
+
+\subsection{More Information}
+
+The bot's main use case is supposed to be in QA format(Question-Answering), as it is supposed to answer queries and provide help to students
+
+Hence, it is also seen that all the datasets were also in QA form for the same reason.
+
+The Qwen 0.6B(600 Million Parameters) model offers speed, balance and accuracy, the Qwen Model has also in fact outperformed ChatGPT 4 and Deepseek-V3 in key benchmarks majorly in reasoning.
+
+To training this model, we used an RTX 4070 GPU on a machine with the following specs.
+\begin{itemize}
+	\item CPU: 15-13500k
+	\item RAM: 64GB
+	\item GPU: RTX 4070
+	\item Storage: 1TB NVME 4.0 SSD
+\end{itemize} For the model with only the NCERT, the training loss metric is shown in \ref{tab:train_loss}.
+\begin{table}[H]
+	\centering
+	\caption{Training Loss for model 1}
+	\label{tab:train_loss}
+	\begin{tabular}{ll}
+		\toprule
+		\textbf{Step} & \textbf{Training Loss} \\
+		\midrule
+		500           & 1.312500               \\
+		1000          & 0.921400               \\
+		1500          & 0.623400               \\
+		2000          & 0.291200               \\
+		2500          & 0.202200               \\
+		3000          & 0.155800               \\
+		3500          & 0.109400               \\
+		4000          & 0.069900               \\
+		4500          & 0.059500               \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
 
 The database is a PostgreSQL database, which is used to store user information and their chat history. We use Vercel Postgres, with Neon, for a fast and scalable experience. As the ORM, we use Drizzle, which is type-safe, lightweight, and has a SQL-centric approach to interacting with databases, making it ideal for modern TypeScript.
-
 
 \end{document}

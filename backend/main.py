@@ -4,8 +4,7 @@ from transformers import pipeline
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from typing import Union
-
-generator = pipeline("text-generation", model="gpt2")
+from llm import eval_circular, eval_ncert
 
 
 # Define the input schema
@@ -29,31 +28,28 @@ app.add_middleware(
 
 
 # Define a route
-@app.post("/generate")
+@app.post("/generate/ncert")
 def generate_text(request: PromptRequest):
     #  if not request.prompt.strip():
     #      raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
-    result = generator(
+    result = eval_ncert(
         request.prompt,
         max_length=request.max_length,
         temperature=request.temperature,
-        do_sample=True,
     )
+    return result
 
-    return {"response": result[0]["generated_text"]}
 
-
-@app.post("/ncert")
+@app.post("/generate/circular")
 def ncert_text(request: PromptRequest):
     #  if not request.prompt.strip():
     #      raise HTTPException(status_code=400, detail="Prompt cannot be empty")
 
-    result = generator(
+    result = eval_circular(
         request.prompt,
         max_length=request.max_length,
         temperature=request.temperature,
-        do_sample=True,
     )
 
-    return {"response": result[0]["generated_text"]}
+    return result
