@@ -42,9 +42,9 @@ def eval_ncert(prompt, max_length=128, temperature=0.6):
     with torch.no_grad():
         output_ids = model_ncert.generate(
             input_ids,
-            max_length=128,
+            max_length=max_length,
             num_return_sequences=1,
-            temperature=0.7,  # Controls randomness (0.7 is balanced)
+            temperature=temperature,  # Controls randomness (0.7 is balanced)
             top_p=0.9,  # Nucleus sampling
             do_sample=True,  # Enable sampling for creativity
         )
@@ -53,9 +53,6 @@ def eval_ncert(prompt, max_length=128, temperature=0.6):
     answer = tokenizer.decode(output_ids[0], skip_special_tokens=True)
 
     return {"response": answer.split("A:")[-1].strip()}
-
-
-print(eval_ncert(test))
 
 
 def eval_circular(prompt, max_length=128, temperature=0.6):
@@ -68,9 +65,9 @@ def eval_circular(prompt, max_length=128, temperature=0.6):
     with torch.no_grad():
         output_ids = model_circular.generate(
             input_ids,
-            max_length=128,
+            max_length=max_length,
             num_return_sequences=1,
-            temperature=0.6,  # Controls randomness (0.7 is balanced)
+            temperature=temperature,  # Controls randomness (0.7 is balanced)
             top_p=0.9,  # Nucleus sampling
             do_sample=True,  # Enable sampling for creativity
         )

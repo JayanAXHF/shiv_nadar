@@ -36,13 +36,16 @@ const Navbar = () => {
   const [_max_length, setMaxLength] = useAtom<number>(max_length_atom);
   const [check_circulars, setCheckCirculars] =
     useAtom<boolean>(check_circulars_atom);
+	if (!session?.user?.image) {
+		console.log("test")
+	}
   return (
     <nav className="w-dvw flex items-center h-20 px-5 py-5">
       {session ? (
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center flex-row">
             <img
-              src={session?.user?.image ?? ""}
+              src={session?.user?.image || "https://api.dicebear.com/9.x/identicon/svg"}
               alt={session?.user.name}
               className="w-10 h-10 rounded"
             />
@@ -52,25 +55,6 @@ const Navbar = () => {
             </div>
           </div>
           <div className="mr-4 flex gap-x-5 flex-row items-center">
-            <Switch
-              id="assigment_toggle"
-              onCheckedChange={setCheckCirculars}
-              checked={check_circulars}
-              className="hidden md:block"
-            />
-            <Label
-              htmlFor="assigment_toggle"
-              className="mr-5 w-max min-w-32 hidden md:block "
-            >
-              {check_circulars ? "Checking Circulars" : "Only NCERT"}
-            </Label>
-            <Input
-              onChange={(e) => {
-                setMaxLength(parseInt(e.target.value));
-              }}
-              placeholder="Max Length"
-              className="hidden md:block"
-            />
             <Button
               variant={"outline"}
               onClick={async () => {

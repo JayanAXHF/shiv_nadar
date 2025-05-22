@@ -12,7 +12,11 @@ import {
 } from "@tanstack/react-query";
 import { db } from "../server/db/";
 import { LlmMessageCard, UserMessageCard } from "./message_cards";
-import { max_length_atom, check_circulars_atom } from "./navbar";
+import Controls, {
+  max_length_atom,
+  check_circulars_atom,
+  temperate_atom,
+} from "./controls";
 import { atom, getDefaultStore, useAtom } from "jotai";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -60,7 +64,7 @@ const ChatCore = () => {
             body: JSON.stringify({
               prompt: newMessage,
               max_length: defaultStore.get(max_length_atom),
-              temperature: 0.7,
+              temperature: defaultStore.get(temperate_atom),
             }),
           },
         ).catch((err) => {
@@ -146,6 +150,7 @@ const ChatCore = () => {
     <div className="h-full max-h-full overflow-hidden">
       {session && (
         <div className="flex flex-col h-full items-center overflow-hidden  justify-center md:w-[40vw] mx-auto">
+          <Controls />
           <ScrollArea className="w-full h-full pb-14 max-h-[80vh] overflow-scroll bg-black mx-auto ">
             <div className="h-full w-full grid justify-center sm:justify-normal bg-black mx-auto gap-y-5">
               {messages?.map((message) => (
