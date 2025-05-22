@@ -8,4 +8,5 @@ dependencies = [
     "boto3>=1.38.18",
     "fastapi>=0.115.12",
     "sagemaker>=2.244.1",
+    "transformers>=4.52.2",
 ]

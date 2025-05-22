@@ -54,11 +54,18 @@ export default function SignIn() {
               <Label htmlFor="password">Password</Label>
               <p
                 onClick={async () => {
-                  let res = await forgetPassword({
+                  const res = await forgetPassword({
                     email: email,
                     redirectTo: "/reset_password",
                   });
-                  console.log(res);
+                  if (res.data) {
+                    toast.success("Password reset email send");
+                  }
+                  if (res.error) {
+                    toast.error(`ERR ${res.error.status}: ${res.error.code}`, {
+                      description: res.error.message,
+                    });
+                  }
                 }}
                 className="ml-auto inline-block text-sm underline cursor-pointer"
               >

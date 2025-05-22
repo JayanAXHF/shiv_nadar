@@ -7,7 +7,7 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url, token }, request) => {
       const { email } = user;
-      await fetch(
+      let res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL || "http:localhost:3000"}/api/send`,
         {
           method: "POST",
@@ -17,10 +17,13 @@ export const auth = betterAuth({
           body: JSON.stringify({
             to: email,
             subject: "Reset your password",
-            request: `Click here to reset your password: ${url}`,
+            request: `${url}`,
           }),
         },
       );
+      if (res.ok) {
+        return await res.json();
+      }
     },
   },
   socialProviders: {
