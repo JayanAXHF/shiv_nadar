@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Loader2, Key } from "lucide-react";
-import { signIn } from "@/lib/auth-client";
+import { forgetPassword, signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -52,9 +52,18 @@ export default function SignIn() {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <p
+                onClick={async () => {
+                  let res = await forgetPassword({
+                    email: email,
+                    redirectTo: "/reset_password",
+                  });
+                  console.log(res);
+                }}
+                className="ml-auto inline-block text-sm underline cursor-pointer"
+              >
                 Forgot your password?
-              </Link>
+              </p>
             </div>
 
             <Input
@@ -88,6 +97,7 @@ export default function SignIn() {
                     {
                       email,
                       password,
+                      rememberMe: rememberMe,
                     },
                     {
                       onRequest: (ctx) => {

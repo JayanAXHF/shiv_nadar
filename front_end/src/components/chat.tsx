@@ -144,6 +144,7 @@ const ChatCore = () => {
       setMessages(data);
       console.log("messages", data);
     }
+
   }, [isMessagesSuccess, data]);
 
   return (
