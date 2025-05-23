@@ -15,24 +15,22 @@ tokenizer.save_pretrained(
 
 # Load the fine-tuned model from the latest checkpoint
 model_ncert = AutoModelForCausalLM.from_pretrained(
-    "llama-3_2Instruct-science-finetuned/checkpoint-4992",
+    "JayanAXHF/NCERT_9th_Sc_Ssc",
     torch_dtype=torch.float16,
     # use_safetensors=True,
 )
 
-model_circular = AutoModelForCausalLM.from_pretrained(
-    "llama-3_2Instruct-science-finetuned/checkpoint-4992"
-)
+model_circular = AutoModelForCausalLM.from_pretrained("JayanAXHF/Assignments_Helper")
 
 # Set the model to evaluation mode
 model_ncert.eval()
 model_ncert.to("cuda" if torch.cuda.is_available() else "mps")
 
 model_circular.eval()
-model_circular.to("cuda" if torch.cuda.is_available() else "cpu")
+model_circular.to("cuda" if torch.cuda.is_available() else "mps")
 
 
-def eval_ncert(prompt, max_length=128, temperature=0.6):
+def eval_ncert(prompt, max_length=128, temperature=0.7):
     input_text = f"Q: {prompt}\nA:"
     input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(
         model_ncert.device
@@ -55,7 +53,7 @@ def eval_ncert(prompt, max_length=128, temperature=0.6):
     return {"response": answer.split("A:")[-1].strip()}
 
 
-def eval_circular(prompt, max_length=128, temperature=0.6):
+def eval_circular(prompt, max_length=128, temperature=0.7):
     input_text = f"Q: {prompt}\nA:"
     input_ids = tokenizer(input_text, return_tensors="pt").input_ids.to(
         model_circular.device
