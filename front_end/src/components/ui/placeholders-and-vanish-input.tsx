@@ -8,10 +8,12 @@ export function PlaceholdersAndVanishInput({
   placeholders,
   onChange,
   onSubmit,
+  disabled = false,
 }: {
   placeholders: string[];
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  disabled?: boolean;
 }) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
 
@@ -190,6 +192,7 @@ export function PlaceholdersAndVanishInput({
         ref={canvasRef}
       />
       <input
+        disabled={disabled}
         onChange={(e) => {
           if (!animating) {
             setValue(e.target.value);
@@ -211,36 +214,54 @@ export function PlaceholdersAndVanishInput({
         type="submit"
         className="absolute right-2 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full disabled:bg-gray-100 bg-black dark:bg-zinc-900 dark:disabled:bg-zinc-800 transition duration-200 flex items-center justify-center"
       >
-        <motion.svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-gray-300 h-4 w-4"
-        >
-          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-          <motion.path
-            d="M5 12l14 0"
-            initial={{
-              strokeDasharray: "50%",
-              strokeDashoffset: "50%",
-            }}
-            animate={{
-              strokeDashoffset: value ? 0 : "50%",
-            }}
-            transition={{
-              duration: 0.3,
-              ease: "linear",
-            }}
-          />
-          <path d="M13 18l6 -6" />
-          <path d="M13 6l6 6" />
-        </motion.svg>
+        {disabled ? (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-circle-stop-icon lucide-circle-stop"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <rect x="9" y="9" width="6" height="6" rx="1" />
+          </svg>
+        ) : (
+          <motion.svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-gray-300 h-4 w-4"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <motion.path
+              d="M5 12l14 0"
+              initial={{
+                strokeDasharray: "50%",
+                strokeDashoffset: "50%",
+              }}
+              animate={{
+                strokeDashoffset: value ? 0 : "50%",
+              }}
+              transition={{
+                duration: 0.3,
+                ease: "linear",
+              }}
+            />
+            <path d="M13 18l6 -6" />
+            <path d="M13 6l6 6" />
+          </motion.svg>
+        )}
       </button>
 
       <div className="absolute inset-0 flex items-center rounded-full pointer-events-none">

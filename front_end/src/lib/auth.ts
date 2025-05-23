@@ -5,8 +5,25 @@ import { db } from "~/server/db";
 export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
-    async sendResetPassword(data, request) {
-      // Send an email to the user with a link to reset their password
+    sendResetPassword: async ({ user, url, token }, request) => {
+      const { email } = user;
+      let res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL || "http:localhost:3000"}/api/send`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            to: email,
+            subject: "Reset your password",
+            request: `${url}`,
+          }),
+        },
+      );
+      if (res.ok) {
+        return await res.json();
+      }
     },
   },
   socialProviders: {

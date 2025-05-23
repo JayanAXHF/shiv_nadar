@@ -14,9 +14,10 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Loader2, Key } from "lucide-react";
-import { signIn } from "@/lib/auth-client";
+import { forgetPassword, signIn } from "@/lib/auth-client";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
@@ -51,9 +52,25 @@ export default function SignIn() {
           <div className="grid gap-2">
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
-              <Link href="#" className="ml-auto inline-block text-sm underline">
+              <p
+                onClick={async () => {
+                  const res = await forgetPassword({
+                    email: email,
+                    redirectTo: "/reset_password",
+                  });
+                  if (res.data) {
+                    toast.success("Password reset email send");
+                  }
+                  if (res.error) {
+                    toast.error(`ERR ${res.error.status}: ${res.error.code}`, {
+                      description: res.error.message,
+                    });
+                  }
+                }}
+                className="ml-auto inline-block text-sm underline cursor-pointer"
+              >
                 Forgot your password?
-              </Link>
+              </p>
             </div>
 
             <Input
@@ -81,20 +98,37 @@ export default function SignIn() {
             className="w-full"
             disabled={loading}
             onClick={async () => {
-              await signIn.email(
-                {
-                  email,
-                  password,
-                },
-                {
-                  onRequest: (ctx) => {
-                    setLoading(true);
-                  },
-                  onResponse: (ctx) => {
-                    setLoading(false);
-                  },
-                },
-              );
+              try {
+                let res = await signIn
+                  .email(
+                    {
+                      email,
+                      password,
+                      rememberMe: rememberMe,
+                    },
+                    {
+                      onRequest: (ctx) => {
+                        setLoading(true);
+                      },
+                      onResponse: (ctx) => {
+                        setLoading(false);
+                      },
+                    },
+                  )
+                  .catch((err) => {
+                    console.log(err);
+                    toast("Error occured during login", {
+                      description: err.message,
+                    });
+                  });
+                if (res?.error) {
+                  toast.error(`ERR ${res.error.status}: ${res.error.code}`, {
+                    description: res.error.message,
+                  });
+                }
+              } catch (error) {
+                toast.error(error.message as string);
+              }
             }}
           >
             {loading ? (
@@ -115,20 +149,24 @@ export default function SignIn() {
               className={cn("w-full gap-2")}
               disabled={loading}
               onClick={async () => {
-                await signIn.social(
-                  {
-                    provider: "google",
-                    callbackURL: "/",
-                  },
-                  {
-                    onRequest: (ctx) => {
-                      setLoading(true);
+                try {
+                  await signIn.social(
+                    {
+                      provider: "google",
+                      callbackURL: "/",
                     },
-                    onResponse: (ctx) => {
-                      setLoading(false);
+                    {
+                      onRequest: (ctx) => {
+                        setLoading(true);
+                      },
+                      onResponse: (ctx) => {
+                        setLoading(false);
+                      },
                     },
-                  },
-                );
+                  );
+                } catch (error) {
+                  toast.error(error.message as string);
+                }
               }}
             >
               <svg
@@ -161,20 +199,31 @@ export default function SignIn() {
               className={cn("w-full gap-2")}
               disabled={loading}
               onClick={async () => {
-                await signIn.social(
-                  {
-                    provider: "github",
-                    callbackURL: "/",
-                  },
-                  {
-                    onRequest: (ctx) => {
-                      setLoading(true);
+                let res = await signIn
+                  .social(
+                    {
+                      provider: "github",
+                      callbackURL: "/",
                     },
-                    onResponse: (ctx) => {
-                      setLoading(false);
+                    {
+                      onRequest: (ctx) => {
+                        setLoading(true);
+                      },
+                      onResponse: (ctx) => {
+                        setLoading(false);
+                      },
                     },
-                  },
-                );
+                  )
+                  .catch((err) => {
+                    console.log(err);
+                    toast("Error occured during login", {
+                      description: err.message,
+                    });
+                  });
+                console.log("res", res);
+                if (!res) {
+                  console.log("res is false");
+                }
               }}
             >
               <svg

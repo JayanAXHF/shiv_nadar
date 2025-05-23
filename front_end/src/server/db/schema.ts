@@ -19,20 +19,6 @@ import {
  */
 export const createTable = pgTableCreator((name) => `front_end_${name}`);
 
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("name_idx").on(t.name)],
-);
-
 export const messages = createTable(
   "message",
   (d) => ({
@@ -43,7 +29,7 @@ export const messages = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
     updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-    user_id: d.integer().notNull(),
+    user_id: d.varchar().notNull(),
     user_msg: d.boolean().notNull(),
   }),
   (t) => [index("text_idx").on(t.text)],

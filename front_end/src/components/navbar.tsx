@@ -3,22 +3,49 @@ import React from "react";
 import { authClient } from "../lib/auth-client";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { atom, getDefaultStore, useAtom } from "jotai";
+import { Input } from "./ui/input";
+import Image from "next/image";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
+
+const max_length_atom = atom(100);
+const check_circulars_atom = atom(false);
+const defaultStore = getDefaultStore();
+export { max_length_atom, check_circulars_atom };
+
+export const Icon = ({ className, ...rest }: any) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth="1.5"
+      stroke="currentColor"
+      className={className}
+      {...rest}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />
+    </svg>
+  );
+};
 
 const Navbar = () => {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
-  } = authClient.useSession();
+  const { data: session } = authClient.useSession();
 
+  const [_max_length, setMaxLength] = useAtom<number>(max_length_atom);
+  const [check_circulars, setCheckCirculars] =
+    useAtom<boolean>(check_circulars_atom);
+	if (!session?.user?.image) {
+		console.log("test")
+	}
   return (
     <nav className="w-dvw flex items-center h-20 px-5 py-5">
       {session ? (
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center flex-row">
             <img
-              src={session?.user?.image ?? ""}
+              src={session?.user?.image || "https://api.dicebear.com/9.x/identicon/svg"}
               alt={session?.user.name}
               className="w-10 h-10 rounded"
             />
@@ -27,7 +54,7 @@ const Navbar = () => {
               <p className="text-white text-xs">Welcome back!</p>
             </div>
           </div>
-          <div className="mr-4">
+          <div className="mr-4 flex gap-x-5 flex-row items-center">
             <Button
               variant={"outline"}
               onClick={async () => {
