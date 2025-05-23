@@ -25,6 +25,12 @@ export const auth = betterAuth({
         return await res.json();
       }
     },
+    session: {
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60, // Cache duration in seconds
+      },
+    },
   },
   socialProviders: {
     google: {
